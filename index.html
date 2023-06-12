@@ -13,7 +13,7 @@
   <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
   <script>
     function loadExcelFile() {
-      fetch('https://github.com/LoshkarevAnton/PoetryConstructicon/blob/98ff58a5e4f7ae0f7c4904640286eacd8af6c8cb/data%20(2).xlsx')
+      fetch('https://raw.githubusercontent.com/LoshkarevAnton/PoetryConstructicon/98ff58a5e4f7ae0f7c4904640286eacd8af6c8cb/data%20(2).xlsx')
         .then(response => response.arrayBuffer())
         .then(data => {
           var workbook = XLSX.read(data, { type: 'array' });
