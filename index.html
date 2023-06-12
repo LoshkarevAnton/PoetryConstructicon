@@ -1,49 +1,47 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Мой сайт</title>
+  <title>Загрузка файла .xlsx</title>
+  <style>
+    .viewport {
+      height: 150px;
+      overflow-y: scroll;
+      border: 1px solid gray;
+      padding: 10px;
+    }
+  </style>
   <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
   <script>
-    // Функция для загрузки файла .xlsx
     function loadExcelFile() {
-      var url = 'https://github.com/LoshkarevAnton/PoetryConstructicon/blob/98ff58a5e4f7ae0f7c4904640286eacd8af6c8cb/data%20(2).xlsx';
-
-      var xhr = new XMLHttpRequest();
-      xhr.open('GET', url, true);
-      xhr.responseType = 'arraybuffer';
-
-      xhr.onload = function(e) {
-        var data = new Uint8Array(xhr.response);
-        var workbook = XLSX.read(data, { type: 'array' });
-        var sheet = workbook.Sheets[workbook.SheetNames[0]];
-        var jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-
-        var field1 = jsonData.map(function(row) {
-          return row[0];
+      fetch('https://github.com/LoshkarevAnton/PoetryConstructicon/blob/98ff58a5e4f7ae0f7c4904640286eacd8af6c8cb/data%20(2).xlsx')
+        .then(response => response.arrayBuffer())
+        .then(data => {
+          var workbook = XLSX.read(data, { type: 'array' });
+          var sheet = workbook.Sheets[workbook.SheetNames[0]];
+          var jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+          
+          var field1 = jsonData.map(function(row) {
+            return row[0];
+          });
+          
+          var viewport1 = document.getElementById('viewport1');
+          viewport1.innerHTML = field1
+            .map(function(value) {
+              return '<div>' + value + '</div>';
+            })
+            .join('');
+        })
+        .catch(error => {
+          console.error('Ошибка загрузки файла:', error);
         });
-
-        var viewport1 = document.getElementById('viewport1');
-        viewport1.innerHTML = field1
-          .map(function(value) {
-            return '<div>' + value + '</div>';
-          })
-          .join('');
-      };
-
-      xhr.send();
     }
 
-    // Загрузка файла .xlsx при загрузке страницы
-    window.onload = function() {
-      loadExcelFile();
-    };
+    window.onload = loadExcelFile;
   </script>
 </head>
 <body>
-  <h1>Мой сайт</h1>
-
+  <h1>Загрузка файла .xlsx</h1>
+  
   <div class="viewport" id="viewport1"></div>
-
-  <!-- Остальное содержимое страницы -->
 </body>
 </html>
