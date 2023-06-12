@@ -7,20 +7,32 @@
     // Функция для загрузки файла .xlsx
     function loadExcelFile() {
       var url = 'https://github.com/LoshkarevAnton/PoetryConstructicon/blob/98ff58a5e4f7ae0f7c4904640286eacd8af6c8cb/data%20(2).xlsx';
-      
+
       var xhr = new XMLHttpRequest();
       xhr.open('GET', url, true);
       xhr.responseType = 'arraybuffer';
-      
+
       xhr.onload = function(e) {
         var data = new Uint8Array(xhr.response);
         var workbook = XLSX.read(data, { type: 'array' });
-        // Дальнейшая обработка данных из файла .xlsx
+        var sheet = workbook.Sheets[workbook.SheetNames[0]];
+        var jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+        var field1 = jsonData.map(function(row) {
+          return row[0];
+        });
+
+        var viewport1 = document.getElementById('viewport1');
+        viewport1.innerHTML = field1
+          .map(function(value) {
+            return '<div>' + value + '</div>';
+          })
+          .join('');
       };
-      
+
       xhr.send();
     }
-    
+
     // Загрузка файла .xlsx при загрузке страницы
     window.onload = function() {
       loadExcelFile();
@@ -29,7 +41,9 @@
 </head>
 <body>
   <h1>Мой сайт</h1>
-  
+
+  <div class="viewport" id="viewport1"></div>
+
   <!-- Остальное содержимое страницы -->
 </body>
 </html>
