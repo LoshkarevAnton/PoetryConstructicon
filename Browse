@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Загрузка таблицы .xlsx</title>
+  <style>
+    .scrollable {
+      height: 400px;
+      overflow: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="scrollable">
+    <table id="table"></table>
+  </div>
+
+  <script>
+    // Загрузка таблицы .xlsx с сервера
+    fetch('https://github.com/LoshkarevAnton/PoetryConstructicon/blob/93b502a87befa67207e38d3b3ad68c85c1f79e9f/data%20(2).xlsx')
+      .then(response => response.arrayBuffer())
+      .then(data => {
+        var workbook = XLSX.read(data, { type: 'array' });
+        var sheet = workbook.Sheets[workbook.SheetNames[0]];
+        var html = XLSX.utils.sheet_to_html(sheet);
+        document.getElementById('table').innerHTML = html;
+      });
+  </script>
+</body>
+</html>
