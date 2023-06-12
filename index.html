@@ -4,14 +4,12 @@
   <title>Мой сайт</title>
   <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
   <script>
-    // Функция для загрузки файла .xlsx с помощью прокси-сервера
+    // Функция для загрузки файла .xlsx
     function loadExcelFile() {
-      var proxyUrl = 'https://cors-anywhere.herokuapp.com/';
       var url = 'https://github.com/LoshkarevAnton/PoetryConstructicon/blob/98ff58a5e4f7ae0f7c4904640286eacd8af6c8cb/data%20(2).xlsx';
-      var fullUrl = proxyUrl + url;
 
       var xhr = new XMLHttpRequest();
-      xhr.open('GET', fullUrl, true);
+      xhr.open('GET', url, true);
       xhr.responseType = 'arraybuffer';
 
       xhr.onload = function(e) {
