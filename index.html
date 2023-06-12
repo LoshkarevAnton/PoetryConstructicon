@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Открытие файла .xlsx на GitHub Pages</title>
+  <title>Мой сайт</title>
   <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
   <script>
-    // Функция для загрузки файла .xlsx с сервера
+    // Функция для загрузки файла .xlsx
     function loadExcelFile() {
       var url = 'https://github.com/LoshkarevAnton/PoetryConstructicon/blob/98ff58a5e4f7ae0f7c4904640286eacd8af6c8cb/data%20(2).xlsx';
+      
       var xhr = new XMLHttpRequest();
       xhr.open('GET', url, true);
       xhr.responseType = 'arraybuffer';
@@ -14,17 +15,21 @@
       xhr.onload = function(e) {
         var data = new Uint8Array(xhr.response);
         var workbook = XLSX.read(data, { type: 'array' });
-        // Здесь можно выполнить необходимые операции с данными из файла .xlsx
-        console.log(workbook);
+        // Дальнейшая обработка данных из файла .xlsx
       };
       
       xhr.send();
     }
+    
+    // Загрузка файла .xlsx при загрузке страницы
+    window.onload = function() {
+      loadExcelFile();
+    };
   </script>
 </head>
 <body>
-  <h1>Открытие файла .xlsx на GitHub Pages</h1>
+  <h1>Мой сайт</h1>
   
-  <button onclick="loadExcelFile()">Загрузить файл</button>
+  <!-- Остальное содержимое страницы -->
 </body>
 </html>
