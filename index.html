@@ -3,22 +3,86 @@
 <head>
   <title>Загрузка файла .xlsx</title>
   <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+   
+	.header {
+      width: 60%;
+      max-width: 100%;
+      height: 100px;
+      margin: 0 auto;
+      background-color: #34eb71;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .header h1 {
+      color: white;
+      font-size: 24px;
+    }
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      gap: 20px; /* Расстояние между окошками */
+	 margin-top: 100px;
+    }
     .viewport {
+      width: 60%;
+      max-width: 70%;
       height: 150px;
       overflow-y: scroll;
       border: 1px solid gray;
       padding: 10px;
+      margin: 0 auto; /* Центрирование окошек */
     }
+    .selected {
+      background-color: yellow;
+    }
+    #viewport2 {
+      border: none; /* Скрытие границы у окошка 2 */
+	 width: 60%;
+    }
+    #viewport3 {
+      border: none; /* Скрытие границы у окошка 3 */
+	 width: 60%;
+    }
+    #viewport4 {
+      border: none; /* Скрытие границы у окошка 4 */
+	 width: 60%;
+    }
+
   </style>
   <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
   <script>
+    var selectedRowIndex = -1;
+    var field2Data = [];
+    var field3Data = [];
+    var field4Data = [];
+
     function loadExcelFile() {
-      fetch('https://raw.githubusercontent.com/LoshkarevAnton/PoetryConstructicon/98ff58a5e4f7ae0f7c4904640286eacd8af6c8cb/data%20(2).xlsx')
+      fetch('https://raw.githubusercontent.com/LoshkarevAnton/PoetryConstructicon/7618a57114b865ffca1f4f76bbf3d8d90147d94c/data.xlsx')
         .then(response => response.arrayBuffer())
         .then(data => {
           var workbook = XLSX.read(data, { type: 'array' });
           var sheet = workbook.Sheets[workbook.SheetNames[0]];
           var jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+          
+          field2Data = jsonData.map(function(row) {
+            return row[1];
+          });
+          
+          field3Data = jsonData.map(function(row) {
+            return row[2];
+          });
+          
+          field4Data = jsonData.map(function(row) {
+            return row[3];
+          });
           
           var field1 = jsonData.map(function(row) {
             return row[0];
@@ -26,22 +90,72 @@
           
           var viewport1 = document.getElementById('viewport1');
           viewport1.innerHTML = field1
-            .map(function(value) {
-              return '<div>' + value + '</div>';
+            .map(function(value, index) {
+              return '<div onclick="selectRow(' + index + ')" class="' + (selectedRowIndex === index ? 'selected' : '') + '">' + value + '</div>';
             })
             .join('');
+          
+          if (selectedRowIndex !== -1) {
+            updateViewport2();
+            updateViewport3();
+            updateViewport4();
+            scrollToSelectedRow();
+          }
         })
         .catch(error => {
           console.error('Ошибка загрузки файла:', error);
         });
     }
 
+    function selectRow(index) {
+      selectedRowIndex = index;
+      var rows = document.getElementById('viewport1').children;
+      for (var i = 0; i < rows.length; i++) {
+        rows[i].classList.remove('selected');
+      }
+      rows[index].classList.add('selected');
+      
+      updateViewport2();
+      updateViewport3();
+      updateViewport4();
+      scrollToSelectedRow();
+    }
+    
+    function updateViewport2() {
+      var viewport2 = document.getElementById('viewport2');
+      viewport2.textContent = field2Data[selectedRowIndex] || '';
+    }
+    
+    function updateViewport3() {
+      var viewport3 = document.getElementById('viewport3');
+      viewport3.textContent = field3Data[selectedRowIndex] || '';
+    }
+    
+    function updateViewport4() {
+      var viewport4 = document.getElementById('viewport4');
+      viewport4.textContent = field4Data[selectedRowIndex] || '';
+    }
+    
+    function scrollToSelectedRow() {
+      var selectedRow = document.getElementsByClassName('selected')[0];
+      if (selectedRow) {
+        selectedRow.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+      }
+    }
+
     window.onload = loadExcelFile;
   </script>
 </head>
 <body>
-  <h1>Загрузка файла .xlsx</h1>
+  <div class="header">
+    <h1>Poetry Constructicon</h1>
+  </div>
   
-  <div class="viewport" id="viewport1"></div>
+  <div class="container">
+    <div class="viewport" id="viewport1"></div>
+    <div class="viewport" id="viewport2"></div>
+    <div class="viewport" id="viewport3"></div>
+    <div class="viewport" id="viewport4"></div>
+  </div>
 </body>
 </html>
