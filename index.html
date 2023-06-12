@@ -1,193 +1,30 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Мой сайт</title>
-  <style>
-    /* Стилизация закладок и содержимого */
-    .tabs {
-      overflow: hidden;
-    }
-    
-    .tab {
-      float: left;
-      cursor: pointer;
-      padding: 8px 16px;
-      border: 1px solid #ccc;
-    }
-    
-    .tab:hover {
-      background-color: #ddd;
-    }
-    
-    .tab.active {
-      background-color: #fff;
-      border-bottom: none;
-    }
-    
-    .tab-content {
-      display: none;
-      padding: 16px;
-      border: 1px solid #ccc;
-    }
-    
-    .tab-content.active {
-      display: block;
-    }
-    
-    /* Стилизация окна с прокруткой */
-    .viewport {
-      height: 150px;
-      overflow-y: scroll;
-      border: 1px solid gray;
-      padding: 10px;
-    }
-    
-    /* Выделение выбранной строки */
-    .selected {
-      background-color: yellow;
-    }
-    
-    /* Отступ между окнами */
-    #viewport2-container {
-      margin-top: 14px;
-    }
-    
-    #viewport3-container {
-      margin-top: 14px;
-    }
-  </style>
+  <title>Открытие файла .xlsx на GitHub Pages</title>
   <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
   <script>
-    var selectedRowIndex = -1;
-    var totalRows = 0;
-    var field2Data = [];
-    var field3Data = [];
-
-    // Функция для чтения файла Excel и отображения полей в окнах просмотра
-    function loadExcelFile(file) {
-      var reader = new FileReader();
-      reader.onload = function(e) {
-        var data = new Uint8Array(e.target.result);
+    // Функция для загрузки файла .xlsx с сервера
+    function loadExcelFile() {
+      var url = 'https://raw.githubusercontent.com/your-username/your-repo/master/path-to-your-file.xlsx';
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', url, true);
+      xhr.responseType = 'arraybuffer';
+      
+      xhr.onload = function(e) {
+        var data = new Uint8Array(xhr.response);
         var workbook = XLSX.read(data, { type: 'array' });
-        var sheet = workbook.Sheets[workbook.SheetNames[0]];
-        var jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-
-        var field1 = jsonData.map(function(row) {
-          return row[0];
-        });
-
-        field2Data = jsonData.map(function(row) {
-          return row[1];
-        });
-
-        field3Data = jsonData.map(function(row) {
-          return row[2];
-        });
-
-        totalRows = field1.length;
-
-        var viewport1 = document.getElementById('viewport1');
-        viewport1.innerHTML = field1
-          .map(function(value, index) {
-            return '<div onclick="selectRow(' + index + ')" class="' + (selectedRowIndex === index ? 'selected' : '') + '">' + value + '</div>';
-          })
-          .join('');
-
-        if (selectedRowIndex !== -1) {
-          updateViewport2();
-          updateViewport3();
-          scrollToSelectedRow();
-        }
+        // Здесь можно выполнить необходимые операции с данными из файла .xlsx
+        console.log(workbook);
       };
-      reader.readAsArrayBuffer(file);
+      
+      xhr.send();
     }
-
-    // Функция для выбора строки
-    function selectRow(index) {
-      selectedRowIndex = index;
-      var rows = document.getElementById('viewport1').getElementsByTagName('div');
-      for (var i = 0; i < rows.length; i++) {
-        if (i === index) {
-          rows[i].classList.add('selected');
-        } else {
-          rows[i].classList.remove('selected');
-        }
-      }
-
-      updateViewport2();
-      updateViewport3();
-      scrollToSelectedRow();
-    }
-
-    // Функция для обновления содержимого второго окна
-    function updateViewport2() {
-      var viewport2 = document.getElementById('viewport2');
-      var selectedField2 = field2Data[selectedRowIndex];
-      viewport2.textContent = selectedField2;
-    }
-
-    // Функция для обновления содержимого третьего окна
-    function updateViewport3() {
-      var viewport3 = document.getElementById('viewport3');
-      var selectedField3 = field3Data[selectedRowIndex];
-      viewport3.textContent = selectedField3;
-    }
-
-    // Функция для прокрутки к выбранной строке
-    function scrollToSelectedRow() {
-      var selectedRow = document.querySelector('#viewport1 .selected');
-      if (selectedRow) {
-        selectedRow.scrollIntoView({
-          behavior: 'smooth',
-          block: 'nearest',
-          inline: 'start'
-        });
-      }
-    }
-
-    // Функция для обработки нажатий клавиш
-    document.addEventListener('keydown', function(event) {
-      if (event.key === 'ArrowDown') {
-        event.preventDefault();
-        if (selectedRowIndex < totalRows - 1) {
-          selectRow(selectedRowIndex + 1);
-        }
-      } else if (event.key === 'ArrowUp') {
-        event.preventDefault();
-        if (selectedRowIndex > 0) {
-          selectRow(selectedRowIndex - 1);
-        }
-      }
-    });
-
-    // Функция для автоматической загрузки файла при загрузке страницы
-    window.addEventListener('DOMContentLoaded', function() {
-      var file = new File([''], 'data (2).xlsx'); // Замените 'sample.xlsx' на путь к вашему файлу .xlsx
-      loadExcelFile(file);
-    });
   </script>
 </head>
 <body>
-  <h1>Мой сайт</h1>
-
-  <!-- Закладки -->
-  <div class="tabs">
-    <a class="tab active" onclick="openTab(event, 'browse')">Browse</a>
-  </div>
-
-  <!-- Содержимое закладок -->
-  <div id="browse" class="tab-content active">
-    <h2>Здесь будет содержимое Browse</h2>
-    <input type="file" accept=".xlsx" style="display: none">
-    <div class="viewport" id="viewport1"></div>
-    <div id="viewport2-container">
-      <h3>Примеры в поэзии</h3>
-      <div class="viewport" id="viewport2"></div>
-    </div>
-    <div id="viewport3-container">
-      <h3>Количество документов и вхождений</h3>
-      <div class="viewport" id="viewport3"></div>
-    </div>
-  </div>
+  <h1>Открытие файла .xlsx на GitHub Pages</h1>
+  
+  <button onclick="loadExcelFile()">Загрузить файл</button>
 </body>
 </html>
