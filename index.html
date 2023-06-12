@@ -163,7 +163,14 @@
     });
   </script>
 </head>
-<body>
+<body onload="loadFileFromUrl()">
+  <script>
+  function loadFileFromUrl() {
+    var fileUrl = "https://example.com/path/to/file.xlsx"; // Замените на нужный URL-адрес файла
+    // Здесь вы можете использовать JavaScript-код для обработки файла по указанному URL-адресу
+    console.log("Файл загружен с сайта: " + fileUrl);
+  }
+  </script>
   <h1>Poetry Constructicon</h1>
   
   <!-- Закладки -->
@@ -174,7 +181,7 @@
   <!-- Содержимое закладок -->
   <div id="browse" class="tab-content active">
     <h2>File</h2>
-    <input type="file" accept=".xlsx" onchange="loadExcelFile(event)">
+    <input type="url" id="fileUrl" onchange="loadFileFromUrl()">
     <div class="viewport" id="viewport1"></div>
     <div id="viewport2-container">
       <h3>Примеры в поэзии</h3>
