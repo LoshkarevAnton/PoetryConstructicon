@@ -65,7 +65,7 @@
     var field4Data = [];
 
     function loadExcelFile() {
-      fetch('https://raw.githubusercontent.com/LoshkarevAnton/PoetryConstructicon/7618a57114b865ffca1f4f76bbf3d8d90147d94c/data.xlsx')
+      fetch('https://raw.githubusercontent.com/LoshkarevAnton/PoetryConstructicon/c211123b6985f0c536459ba7712016f10f278945/data.xlsx')
         .then(response => response.arrayBuffer())
         .then(data => {
           var workbook = XLSX.read(data, { type: 'array' });
